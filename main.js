@@ -5,14 +5,14 @@ function createWindow() {
     let win = new BrowserWindow({
         width: 800,
         height: 600,
-        fullscreen: true,
+        //fullscreen: true,
         autoHideMenuBar: true,
         webPreferences: {
             nodeIntegration: true
         }
     });
-
-    win.loadFile('./views/login.html');
+    console.log('Hola');
+    win.loadFile('./index.html');
 }
 
 app.on('ready', createWindow);

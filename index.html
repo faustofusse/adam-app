@@ -7,17 +7,45 @@
 </head>
 
 <body>
-    <h1>Hello World!</h1>
-    Estamos usando node
+    <h1>SpeechRecognition</h1>
+    <button id="talk">Talk</button>
+    <p></p>
+    <video autoplay></video>
+    <script src="./public/javascripts/jquery-3.3.1.min.js"></script>
     <script>
-        document.write(process.versions.node)
-    </script>, Chrome
-    <script>
-        document.write(process.versions.chrome)
-    </script>, y Electron
-    <script>
-        document.write(process.versions.electron)
-    </script>.
+
+        function errorCallback(e) {
+            console.log('Error', e)
+         }
+
+         navigator.getUserMedia({video: true, audio: true}, (localMediaStream) => {
+            var video = document.querySelector('video')
+            var binaryData = [];
+            binaryData.push(localMediaStream);
+            video.src = window.URL.createObjectURL(new Blob(binaryData, {type: "application/zip"}))
+            video.onloadedmetadata = (e) => {
+               // Ready to go. Do some stuff.
+            };
+         }, errorCallback)
+
+
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+
+        recognition.onstart = () => {
+            console.log("Listening...");
+        }
+
+        recognition.onresult = (e) => {
+            //$('p').html(e.results[0][0].transcript);
+            console.log(e.results[0][0].transcript)
+        }
+
+        //$('button#talk').click(()=>{
+            recognition.start();
+        //});
+    </script>
 </body>
 
 </html>
