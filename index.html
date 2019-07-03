@@ -11,41 +11,69 @@
     <button id="talk">Talk</button>
     <p></p>
     <video autoplay></video>
-    <script src="./public/javascripts/jquery-3.3.1.min.js"></script>
-    <script>
 
-        function errorCallback(e) {
-            console.log('Error', e)
-         }
-
-         navigator.getUserMedia({video: true, audio: true}, (localMediaStream) => {
-            var video = document.querySelector('video')
-            var binaryData = [];
-            binaryData.push(localMediaStream);
-            video.src = window.URL.createObjectURL(new Blob(binaryData, {type: "application/zip"}))
-            video.onloadedmetadata = (e) => {
-               // Ready to go. Do some stuff.
-            };
-         }, errorCallback)
-
-
-
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-
-        recognition.onstart = () => {
-            console.log("Listening...");
-        }
-
-        recognition.onresult = (e) => {
-            //$('p').html(e.results[0][0].transcript);
-            console.log(e.results[0][0].transcript)
-        }
-
-        //$('button#talk').click(()=>{
-            recognition.start();
-        //});
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}
     </script>
+    <script src="./public/javascripts/jquery-3.3.1.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
+    <script>
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+
+            recognition.onstart = () => {
+                console.log("Listening...");
+            }
+
+            recognition.onresult = (e) => {
+                $('p').html(e.results[0][0].transcript);
+                //console.log(e.results[0][0].transcript)
+            }
+
+            $('button#talk').click(()=>{
+                recognition.start();
+            });
+
+        /*
+
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+
+            recognition.onstart = () => {
+                console.log("Listening...");
+            }
+
+            recognition.onresult = (e) => {
+                //$('p').html(e.results[0][0].transcript);
+                console.log(e.results[0][0].transcript)
+            }
+
+            $('button#talk').click(()=>{
+                recognition.start();
+            });
+            /*const mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.start();
+
+            const audioChunks = [];
+            mediaRecorder.addEventListener("dataavailable", event => {
+            audioChunks.push(event.data);
+            });
+
+            mediaRecorder.addEventListener("stop", () => {
+            const audioBlob = new Blob(audioChunks);
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = new Audio(audioUrl);
+            audio.play();
+            });
+
+            setTimeout(() => {
+            mediaRecorder.stop();
+            }, 3000);*/
+        //});
+        
+    </script>
+    <script>if (window.module) module = window.module;</script>
 </body>
 
 </html>
