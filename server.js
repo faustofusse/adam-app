@@ -1,7 +1,7 @@
 const server = require('http').createServer();
 
 const io = require('socket.io')(server, {
-  path: '/test',
+  path: '/',
   serveClient: false,
   // below are engine.IO options
   pingInterval: 10000,
@@ -12,8 +12,11 @@ const io = require('socket.io')(server, {
 io.on('connection', socket => {
     console.log('Usuario conectado.');
 
-    socket.on('left-press', () => {
-        console.log('left-press');
+    socket.on('button-press', (data) => {
+        console.log('button-press: ' + data.button);
+    });
+    socket.on('button-release', (data) => {
+        console.log('button-release: ' + data.button);
     });
 });
 
