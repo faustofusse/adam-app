@@ -1,5 +1,7 @@
 const { app, BrowserWindow, systemPreferences } = require('electron')
 
+const server = require('./server.js')
+
 function createWindow() {
     // Crea la ventana del navegador.
     let win = new BrowserWindow({
