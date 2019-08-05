@@ -18,12 +18,13 @@
     },
     "homepage": "https://github.com/faustofusse/adam-app#readme",
     "devDependencies": {
-        "electron": "^5.0.6"
+        "electron": "^5.0.6",
+        "electron-rebuild": "^1.8.5"
     },
     "dependencies": {
-        "annyang": "^2.6.1",
         "http": "0.0.0",
         "johnny-five": "^1.2.0",
+        "serialport": "^7.1.5",
         "socket.io": "^2.2.0"
     }
 }
