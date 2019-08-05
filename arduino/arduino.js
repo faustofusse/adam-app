@@ -1,6 +1,6 @@
 module.exports = (io) => {
     var five = require("johnny-five");
-    var board = new five.Board();
+    var board = new five.Board({port:'COM4'});
 
     board.on("ready", function () {
         io.on('connection', socket => {
