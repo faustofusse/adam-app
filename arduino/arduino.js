@@ -1,5 +1,6 @@
 module.exports = (io) => {
     var five = require("johnny-five");
+    const {Board, Proximity} = require("johnny-five");
     var board = new five.Board({port:'COM3'});
 
     board.on("ready", function () {
@@ -8,6 +9,23 @@ module.exports = (io) => {
         m11 = new five.Pin(12);
         m20 = new five.Pin(11);
         m21 = new five.Pin(10);
+
+        cons proximity = new Proximity({
+
+        	controller: "HCSR04",
+        	pin: 7
+
+        })
+
+        proximity.on("change", () => {
+        	if (proximity.cm>5){
+        	     m10.low();
+                 m21.low();
+        	}
+        })
+
+
+
 
 
 
