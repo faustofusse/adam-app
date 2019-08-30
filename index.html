@@ -3,75 +3,87 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>ADAM</title>
+    <link rel="stylesheet" href="./public/stylesheets/main.css">
 </head>
 
 <body>
-    <h1>SpeechRecognition</h1>
-    <button id="talk">Talk</button>
-    <p></p>
-    <video autoplay></video>
+    <!-- <button id="talk">Talk</button> -->
+    <!-- <p></p> -->
 
-    <script>if (typeof module === 'object') {window.module = module; module = undefined;}
+    <div class="background"></div>
+
+    <div class="container">
+        <nav>
+            <div></div>
+            <div class="circle">
+                <div class="text">
+                    Some Text
+                </div>
+            </div>
+            <div class="time"><span>--:--</span></div>
+        </nav>
+        <div class="buttons">
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+        </div>
+    </div>
+
+    <script>if (typeof module === 'object') { window.module = module; module = undefined; }
     </script>
     <script src="./public/javascripts/jquery-3.3.1.min.js"></script>
+    <script src="./public/javascripts/moment.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
     <script>
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognition = new SpeechRecognition();
+        // Speech recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.onstart = () => {
+            console.log("Listening...");
+        }
+        recognition.onresult = (e) => {
+            // $('p').html(e.results[0][0].transcript);
+            console.log(e.results[0][0].transcript)
+        }
 
-            recognition.onstart = () => {
-                console.log("Listening...");
+        // Talk button
+        $('button#talk').click(() => {
+            recognition.start();
+        });
+
+        // Clock
+        var interval = setInterval(function () {
+            var momentNow = moment();
+            $('div.time span').html(momentNow.format('hh:mm'));
+        }, 100);
+
+        // Ask question to Deeppavlov server
+        var askQuestion = async (context, question) => {
+            const data = {
+                "context": [context],
+                "question": [question]
             }
-
-            recognition.onresult = (e) => {
-                $('p').html(e.results[0][0].transcript);
-                //console.log(e.results[0][0].transcript)
-            }
-
-            $('button#talk').click(()=>{
-                recognition.start();
+            const rawResponse = await fetch('http://0.0.0.0:5000/squad', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
             });
+            const content = await rawResponse.json();
+            const response = content[0][0];
+            return response;
+        };
 
-        /*
+        // PRUEBA
+        const context1 = "Hola soy fausto. Maria come manzanas sin cascara. Despues de jugar ajedrez, toma agua.";
+        const contextMalba = "Objetivos generales del recorrido: Centrar la experiencia en una vivencia creativa ligada al pensamiento artístico, la imaginación y lo cultural, Hacer foco en los procesos de producción personal y colectiva del grupo, Incentivar la experiencia sensorial durante el encuentro con las obras, Aportar herramientas que accionen el conocimiento e ideas previas, Acercar aquellos conocimientos y saberes que proporcionan las obras de arte y los y las artistas, Producir un encuentro entre personas conocidos y extraños, en un espacio extra-cotidiano, para construir y compartir una experiencia transformadora. Metodología: La propuesta se desarrolla diferentes momentos, atravesando distintos núcleos de las salas de la colección permanente: Arte Latinoamericano: 1900-1970 para establecer un recorrido espacial de las salas.";
+        askQuestion(contextMalba, "Que hizo Tarsila?").then(value => {
+            console.log(value)
+        });
 
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognition = new SpeechRecognition();
-
-            recognition.onstart = () => {
-                console.log("Listening...");
-            }
-
-            recognition.onresult = (e) => {
-                //$('p').html(e.results[0][0].transcript);
-                console.log(e.results[0][0].transcript)
-            }
-
-            $('button#talk').click(()=>{
-                recognition.start();
-            });
-            /*const mediaRecorder = new MediaRecorder(stream);
-            mediaRecorder.start();
-
-            const audioChunks = [];
-            mediaRecorder.addEventListener("dataavailable", event => {
-            audioChunks.push(event.data);
-            });
-
-            mediaRecorder.addEventListener("stop", () => {
-            const audioBlob = new Blob(audioChunks);
-            const audioUrl = URL.createObjectURL(audioBlob);
-            const audio = new Audio(audioUrl);
-            audio.play();
-            });
-
-            setTimeout(() => {
-            mediaRecorder.stop();
-            }, 3000);*/
-        //});
-        
     </script>
     <script>if (window.module) module = window.module;</script>
 </body>
