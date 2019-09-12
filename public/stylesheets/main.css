@@ -3,8 +3,7 @@
     font-family: 'Raleway', sans-serif;
 }
 
-body,
-html {
+body, html {
     overflow: hidden;
     display: flex;
     justify-content: center;
@@ -60,22 +59,21 @@ div.time {
 
 div.time span {
     color: #333;
-
 }
 
-.circle { 
-    margin: -50px auto -50px auto; 
-    width: 30%; 
+.circle {
+    margin: -50px auto -50px auto;
+    width: 30%;
     border-radius: 50%;
     background: #888;
     /* -moz-transform: scaleY(0.4); */
     /* -webkit-transform: scaleY(0.4); */
-  }
-  
-  .text {
+}
+
+.text {
     font: 40px/300px arial;
     color: white;
     text-align: center;
     /* -moz-transform: scaleY(2.5); */
     /* -webkit-transform: scaleY(2.5); */
-  }
+}
