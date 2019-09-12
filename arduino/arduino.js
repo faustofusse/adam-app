@@ -1,8 +1,34 @@
 module.exports = (io) => {
     var five = require("johnny-five");
-    var board = new five.Board({port:'COM4'});
+    const {Board, Proximity} = require("johnny-five");
+    var board = new five.Board({port:'COM3'});
 
     board.on("ready", function () {
+        
+        m10 = new five.Pin(13);
+        m11 = new five.Pin(12);
+        m20 = new five.Pin(11);
+        m21 = new five.Pin(10);
+
+        cons proximity = new Proximity({
+
+        	controller: "HCSR04",
+        	pin: 7
+
+        })
+
+        proximity.on("change", () => {
+        	if (proximity.cm>5){
+        	     m10.low();
+                 m21.low();
+        	}
+        })
+
+
+
+
+
+
         io.on('connection', socket => {
             console.log('Usuario conectado.');
 
@@ -18,11 +44,35 @@ module.exports = (io) => {
 
                 } else if (data.button === 'up') {
 
+                    m10.high();
+                    m11.low();
+                    m20.high();
+                    m21.low();
+                    console.log("adelante");
+
                 } else if (data.button === 'down') {
+
+                    m10.low();
+                    m11.high();
+                    m20.low();
+                    m21.high();
+                    console.log("atras");
 
                 } else if (data.button === 'left') {
 
+                    m10.high();
+                    m11.low();
+                    m20.low();
+                    m21.high();
+                    console.log("izquierda");
+
                 } else if (data.button === 'right') {
+
+                    m10.low();
+                    m11.high();
+                    m20.high();
+                    m21.low();
+                    console.log("derecha");
 
                 } else if (data.button === 'center') {
 
@@ -41,11 +91,31 @@ module.exports = (io) => {
 
                 } else if (data.button === 'up') {
 
+                    m10.low();
+                    m11.low();
+                    m20.low();
+                    m21.low();
+
                 } else if (data.button === 'down') {
+
+                    m10.low();
+                    m11.low();
+                    m20.low();
+                    m21.low();
 
                 } else if (data.button === 'left') {
 
+                    m10.low();
+                    m11.low();
+                    m20.low();
+                    m21.low();
+
                 } else if (data.button === 'right') {
+
+                    m10.low();
+                    m11.low();
+                    m20.low();
+                    m21.low();
 
                 } else if (data.button === 'center') {
 
@@ -57,10 +127,10 @@ module.exports = (io) => {
         /**
          * Motor A: PWM 11, dir 12
          * Motor B: PWM 5, dir 4
-         */
+         
         var motors = new five.Motors([
-            { pins: { dir: 12, pwm: 11 }, invertPWM: true },
-            { pins: { dir: 4, pwm: 5 }, invertPWM: true }
+            { pins: { dir: 13, pwm: 12 }, invertPWM: true },
+            { pins: { dir: 11, pwm: 10 }, invertPWM: true }
         ]);
 
         board.repl.inject({
@@ -99,7 +169,6 @@ module.exports = (io) => {
 
         // Use REPL if you want to go further
         console.log("Done auto-driving! Use `motors` to control motors in REPL");
-
+*/
     });
-
 }
