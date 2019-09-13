@@ -64,7 +64,7 @@
                 "context": [context],
                 "question": [question]
             }
-            const rawResponse = await fetch('http://0.0.0.0:5000/squad', {
+            const rawResponse = await fetch('http://localhost:5000/squad', {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -74,16 +74,21 @@
             });
             const content = await rawResponse.json();
             const response = content[0][0];
+            console.log(response);
             return response;
         };
 
         // PRUEBA
         const context1 = "Hola soy fausto. Maria come manzanas sin cascara. Despues de jugar ajedrez, toma agua.";
         const contextMalba = "Objetivos generales del recorrido: Centrar la experiencia en una vivencia creativa ligada al pensamiento artístico, la imaginación y lo cultural, Hacer foco en los procesos de producción personal y colectiva del grupo, Incentivar la experiencia sensorial durante el encuentro con las obras, Aportar herramientas que accionen el conocimiento e ideas previas, Acercar aquellos conocimientos y saberes que proporcionan las obras de arte y los y las artistas, Producir un encuentro entre personas conocidos y extraños, en un espacio extra-cotidiano, para construir y compartir una experiencia transformadora. Metodología: La propuesta se desarrolla diferentes momentos, atravesando distintos núcleos de las salas de la colección permanente: Arte Latinoamericano: 1900-1970 para establecer un recorrido espacial de las salas.";
-        askQuestion(contextMalba, "Que hizo Tarsila?").then(value => {
+        
+        askQuestion(context1, "Que come Maria?").then(value => {
             console.log(value)
         });
-
+        const data = {
+            "context": [context1],
+            "question": ["Que come Maria?"]
+        }
     </script>
     <script>if (window.module) module = window.module;</script>
 </body>
