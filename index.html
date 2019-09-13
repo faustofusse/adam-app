@@ -25,7 +25,7 @@
         </nav>
         <div class="buttons">
             <button>1</button>
-            <button>2</button>
+            <button id="talk">2</button>
             <button>3</button>
         </div>
     </div>
@@ -36,6 +36,10 @@
     <script src="./public/javascripts/moment.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
     <script>
+        const url = 'https://aadam.herokuapp.com';
+        var contenido = [];
+        var texto = '';
+
         // Speech recognition
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         const recognition = new SpeechRecognition();
@@ -44,7 +48,11 @@
         }
         recognition.onresult = (e) => {
             // $('p').html(e.results[0][0].transcript);
-            console.log(e.results[0][0].transcript)
+            var transcript = e.results[0][0].transcript;
+            console.log('Pregunta: ' + transcript);
+            askQuestion(texto, transcript).then(rta => {
+                console.log('Respuesta: ' + rta);
+            });
         }
 
         // Talk button
@@ -74,21 +82,26 @@
             });
             const content = await rawResponse.json();
             const response = content[0][0];
-            console.log(response);
+            console.log(content[0]);
             return response;
         };
-
-        // PRUEBA
-        const context1 = "Hola soy fausto. Maria come manzanas sin cascara. Despues de jugar ajedrez, toma agua.";
-        const contextMalba = "Objetivos generales del recorrido: Centrar la experiencia en una vivencia creativa ligada al pensamiento artístico, la imaginación y lo cultural, Hacer foco en los procesos de producción personal y colectiva del grupo, Incentivar la experiencia sensorial durante el encuentro con las obras, Aportar herramientas que accionen el conocimiento e ideas previas, Acercar aquellos conocimientos y saberes que proporcionan las obras de arte y los y las artistas, Producir un encuentro entre personas conocidos y extraños, en un espacio extra-cotidiano, para construir y compartir una experiencia transformadora. Metodología: La propuesta se desarrolla diferentes momentos, atravesando distintos núcleos de las salas de la colección permanente: Arte Latinoamericano: 1900-1970 para establecer un recorrido espacial de las salas.";
         
-        askQuestion(context1, "Que come Maria?").then(value => {
-            console.log(value)
+        $.get(url + '/api/texto', async function(data) {
+            for (var i = 0; i < data.length; i++){
+                var id = data[i].fileId;
+                await $.get(url + '/api/documentos/' + id, function(text) {
+                    contenido.push(text);
+                    texto += '\n' + text;
+                });
+            }
+            alert('Contenido listo!');
+            // console.log(contenido);
+            // console.log(texto);
+            /*askQuestion(texto, "Que es un texto?").then(value => {
+                console.log(value);
+            });*/
         });
-        const data = {
-            "context": [context1],
-            "question": ["Que come Maria?"]
-        }
+
     </script>
     <script>if (window.module) module = window.module;</script>
 </body>
