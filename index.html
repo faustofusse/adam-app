@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>ADAM</title>
     <link rel="stylesheet" href="./public/stylesheets/main.css">
+    <link href="./public/fontawesome/css/all.css" rel="stylesheet">
 </head>
 
 <body>
@@ -24,9 +25,9 @@
             <div class="time"><span>--:--</span></div>
         </nav>
         <div class="buttons">
-            <button>1</button>
-            <button id="talk">2</button>
-            <button>3</button>
+            <button style="width: 15em; height: 15em"><i style="font-size: 6em;" class="fas fa-map-marker-alt"></i></button>
+            <button id="talk"><i style="font-size: 10em;" class="fas fa-microphone"></i></button>
+            <button style="width: 15em; height: 15em"><i style="font-size: 6em;" class="fas fa-align-justify"></i></button>
         </div>
     </div>
 
@@ -36,6 +37,14 @@
     <script src="./public/javascripts/moment.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
     <script>
+        /*navigator.mediaDevices.getUserMedia({ audio: true })
+          .then(function(stream) {
+            console.log('Microfono listo!')
+          })
+          .catch(function(err) {
+            console.log('No mic for you!')
+          });*/
+
         const url = 'https://aadam.herokuapp.com';
         var contenido = [];
         var texto = '';
@@ -52,6 +61,7 @@
             console.log('Pregunta: ' + transcript);
             askQuestion(texto, transcript).then(rta => {
                 console.log('Respuesta: ' + rta);
+                alert(rta);
             });
         }
 
@@ -94,7 +104,7 @@
                     texto += '\n' + text;
                 });
             }
-            alert('Contenido listo!');
+            console.log('Contenido listo!');
             // console.log(contenido);
             // console.log(texto);
             /*askQuestion(texto, "Que es un texto?").then(value => {
