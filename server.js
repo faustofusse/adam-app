@@ -1,20 +1,22 @@
-const server = require('http').createServer();
+const express = require('express');
+const app = express();
+const server = require('http').Server(app);
 const ip = require('ip');
 const sp = require('serialport')
 
-const io = require('socket.io')(server, {
-  path: '/',
-  serveClient: false,
-  pingInterval: 10000,
-  pingTimeout: 5000,
-  cookie: false
-});
-
-/*io.on('connection', () => {
+const io = require('socket.io')(server);
+io.on('connection', () => {
   console.log('Usuario conectado');
-})*/
+})
 
-const arduino = require('./arduino/arduino')(io);
+// const arduino = require('./arduino/arduino')(io);
+
+app.use(express.static('public'))
+
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/index.html');
+  // res.send('hola')
+});
 
 server.listen(3000, async () => {
     await sp.list((err, ports) => {

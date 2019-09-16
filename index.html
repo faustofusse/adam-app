@@ -4,16 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <title>ADAM</title>
-    <link rel="stylesheet" href="./public/stylesheets/main.css">
-    <link href="./public/fontawesome/css/all.css" rel="stylesheet">
+    <link href="./fontawesome/css/all.css" rel="stylesheet">
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <link rel="stylesheet" href="./stylesheets/main.css">
 </head>
 
 <body>
-    <!-- <button id="talk">Talk</button> -->
-    <!-- <p></p> -->
-
     <div class="background"></div>
-
     <div class="container">
         <nav>
             <div></div>
@@ -25,95 +24,21 @@
             <div class="time"><span>--:--</span></div>
         </nav>
         <div class="buttons">
-            <button style="width: 15em; height: 15em"><i style="font-size: 6em;" class="fas fa-map-marker-alt"></i></button>
-            <button id="talk"><i style="font-size: 10em;" class="fas fa-microphone"></i></button>
-            <button style="width: 15em; height: 15em"><i style="font-size: 6em;" class="fas fa-align-justify"></i></button>
+            <button style="width: 15em; height: 15em"><i style="font-size: 6em;"
+                    class="fas fa-map-marker-alt"></i></button>
+            <button id="talk"><i style="font-size: 12em;" class="material-icons">mic</i></button>
+            <button style="width: 15em; height: 15em"><i style="font-size: 6em;"
+                    class="material-icons">dashboard</i></button>
         </div>
     </div>
 
-    <script>if (typeof module === 'object') { window.module = module; module = undefined; }
-    </script>
-    <script src="./public/javascripts/jquery-3.3.1.min.js"></script>
-    <script src="./public/javascripts/moment.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/annyang/2.6.1/annyang.min.js"></script>
     <script>
-        /*navigator.mediaDevices.getUserMedia({ audio: true })
-          .then(function(stream) {
-            console.log('Microfono listo!')
-          })
-          .catch(function(err) {
-            console.log('No mic for you!')
-          });*/
-
-        const url = 'https://aadam.herokuapp.com';
-        var contenido = [];
-        var texto = '';
-
-        // Speech recognition
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-        recognition.onstart = () => {
-            console.log("Listening...");
-        }
-        recognition.onresult = (e) => {
-            // $('p').html(e.results[0][0].transcript);
-            var transcript = e.results[0][0].transcript;
-            console.log('Pregunta: ' + transcript);
-            askQuestion(texto, transcript).then(rta => {
-                console.log('Respuesta: ' + rta);
-                alert(rta);
-            });
-        }
-
-        // Talk button
-        $('button#talk').click(() => {
-            recognition.start();
-        });
-
-        // Clock
-        var interval = setInterval(function () {
-            var momentNow = moment();
-            $('div.time span').html(momentNow.format('hh:mm'));
-        }, 100);
-
-        // Ask question to Deeppavlov server
-        var askQuestion = async (context, question) => {
-            const data = {
-                "context": [context],
-                "question": [question]
-            }
-            const rawResponse = await fetch('http://localhost:5000/squad', {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
-            const content = await rawResponse.json();
-            const response = content[0][0];
-            console.log(content[0]);
-            return response;
-        };
-        
-        $.get(url + '/api/texto', async function(data) {
-            for (var i = 0; i < data.length; i++){
-                var id = data[i].fileId;
-                await $.get(url + '/api/documentos/' + id, function(text) {
-                    contenido.push(text);
-                    texto += '\n' + text;
-                });
-            }
-            console.log('Contenido listo!');
-            // console.log(contenido);
-            // console.log(texto);
-            /*askQuestion(texto, "Que es un texto?").then(value => {
-                console.log(value);
-            });*/
-        });
-
+        if (typeof module === 'object') { window.module = module; module = undefined; }
     </script>
-    <script>if (window.module) module = window.module;</script>
+    <script src="./javascripts/jquery-3.3.1.min.js"></script>
+    <script src="./javascripts/moment.min.js"></script>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=5vR7chDQ"></script>
+    <script src="./javascripts/script.js"></script>
 </body>
 
 </html>

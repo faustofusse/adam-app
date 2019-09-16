@@ -1,108 +1,71 @@
-// $(function () {
-// ------------------------- CHECKEAR PATHNAME
+// mdc.ripple.MDCRipple.attachTo(document.querySelector('button'));
 
-let pathname = window.location.pathname;
-$('ul li a[href=\'' + pathname + '\']').addClass('activo');
-if (pathname === '/registro') $('input[type=\'text\'], input[type=\'email\']').val('');
+const url = 'https://aadam.herokuapp.com';
+var contenido = [];
+var texto = '';
 
-// ------------------------- INICIO
-
-$(document).find('button#eliminar').click(eliminarItem);
-
-$('div.archivo').each((index, element) => {
-    let id = $(element).attr('id');
-    let url = '/api/documentos/' + id;
-    $.get(url, data => {
-        // $(element).find('p').html(data);
-        var zip = new JSZip(data);
-        var doc = new Docxtemplater().loadZip(zip);
-        var text = doc.getFullText();
-        console.log(text);
+// Speech recognition
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+recognition.onstart = () => {
+    console.log("Listening...");
+}
+recognition.onresult = (e) => {
+    // $('p').html(e.results[0][0].transcript);
+    var transcript = e.results[0][0].transcript;
+    console.log('Pregunta: ' + transcript);
+    askQuestion(texto, transcript).then(rta => {
+        console.log('Respuesta: ' + rta);
+        // alert(rta);
+        if (responsiveVoice.voiceSupport()) {
+            responsiveVoice.speak(rta, 'Spanish Latin American Male');
+        }
     });
+}
 
-    // $(element).find('p').load('/api/documentos/' + id);
-    // $(element).find('button#slide').click(slideFile);
+// Talk button
+$('button#talk').click(() => {
+    recognition.start();
 });
 
-// ------------------------- EVENTOS
+// Clock
+var interval = setInterval(function () {
+    var momentNow = moment();
+    $('div.time span').html(momentNow.format('hh:mm'));
+}, 100);
 
-$('button#subir-archivo').click(() => upload_div_visibility(true));
-$('div.upload button#cerrar').click(() => upload_div_visibility(false));
+// Ask question to Deeppavlov server
+var askQuestion = async (context, question) => {
+    const data = {
+        "context": [context],
+        "question": [question]
+    }
+    const rawResponse = await fetch('http://localhost:5000/squad', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    });
+    const content = await rawResponse.json();
+    const response = content[0][0];
+    console.log(content[0]);
+    return response;
+};
 
-$('form#usuario').submit((e) => {
-    e.preventDefault();
-    let data = {
-        name: $('input#name').val(),
-        lastName: $('input#lastName').val(),
-        email: $('input#email').val(),
-        password: $('input#password').val(),
-        repeatPassword: $('input#repeatPassword').val()
-    };
-    for (d in data)
-        if (data[d] === '') delete data[d];
-    console.log(data);
-    let method = pathname === '/registro' ? 'POST' : 'PUT';
-    $.ajax({ url: '/api/usuarios', method, data })
-        .fail((err) => console.error(err))
-        .done((response) => {
-            alert(JSON.stringify(response));
-            if (data.errors) handleErrors(data.errors);
+$.get(url + '/api/texto', async function (data) {
+    for (var i = 0; i < data.length; i++) {
+        var id = data[i].fileId;
+        await $.get(url + '/api/documentos/' + id, function (text) {
+            contenido.push(text);
+            texto += '\n' + text;
         });
+    }
+    console.log('Contenido listo!');
+    // console.log(contenido);
+    // console.log(texto);
+    /*askQuestion(texto, "Que es un texto?").then(value => {
+        console.log(value);
+    });*/
 });
-
-$('form#archivo').submit((e) => {
-    e.preventDefault();
-    let form = document.getElementById("archivo");
-    let formdata = new FormData(form);
-    console.log('Loading....');
-    upload_div_visibility(false);
-    $.ajax({
-            url: '/api/archivos',
-            data: formdata,
-            processData: false,
-            contentType: false,
-            type: 'POST'
-        }).fail((err) => console.error(err))
-        .done((response) => {
-            console.log(response);
-            console.log('File uploaded.');
-            if (response.errors) return handleErrors(response.errors);
-            alert(response.msg);
-            location.reload();
-        });;
-});
-
-// ------------------------- FUNCIONES
-
-function slideFile() {
-    $(this).parent().parent().find('div.texto').slideToggle(400);
-}
-
-function upload_div_visibility(toVisible) {
-    $('div.upload-container').css('display', toVisible ? 'flex' : 'none');
-}
-
-function eliminarItem(e) {
-    let eliminar = confirm('Estas seguro de que quieres eliminar este archivo?');
-    if (!eliminar) return;
-    let parent = $(this).parent();
-    if (!parent.attr('class') || parent.attr('class') !== 'imagen')
-        parent = parent.parent();
-    let id = parent.attr('id');
-    $.ajax({
-            url: '/api/archivos/' + id,
-            type: 'DELETE'
-        }).fail((err) => console.error(err))
-        .done((response) => {
-            console.log('File deleted.');
-            if (response.errors) return handleErrors(response.errors);
-            alert(response.msg);
-            console.log(response);
-            location.reload();
-        });;
-}
-
-function handleErrors(errors) {
-    alert(errors);
-}
-// });
