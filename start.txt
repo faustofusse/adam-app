@@ -3,8 +3,10 @@ conda create --name adam
 conda activate adam
 conda install python=3.6.9
 pip install tensorflow
-pip install deeppavlov
+pip install deeppavlov==0.5.0
 python -m deeppavlov install squad_bert
+git clone https://github.com/deepmipt/DeepPavlov.git
+python -m deeppavlov download ./DeepPavlov/deeppavlov/configs/squad/squad_ru_bert_infer.json
 python -m deeppavlov riseapi ./DeepPavlov/deeppavlov/configs/squad/squad_ru_bert_infer.json
 
 LINKS:
