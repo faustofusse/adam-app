@@ -19,6 +19,8 @@ recognition.onresult = (e) => {
         // alert(rta);
         if (responsiveVoice.voiceSupport()) {
             responsiveVoice.speak(rta, 'Spanish Latin American Male');
+        }else{
+            alert(rta);
         }
     });
 }
