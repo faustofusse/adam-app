@@ -4,6 +4,18 @@ const local_api = 'http://localhost:5000'
 var contenido = [];
 var texto = '';
 
+// Sockets 
+const socket = io('http://localhost:5000/');
+socket.on('connect', function () {
+    // socket.emit('holaa', { data: 'I\'m connected!' });
+    console.log('Socket connected')
+
+});
+socket.on('values', (values) => {
+    console.log(values)
+    // console.log(JSON.parse(values));
+});
+
 // Get content
 $.get(url + '/api/texto', async (data) => {
     for (var i = 0; i < data.length; i++) {
@@ -18,12 +30,39 @@ $.get(url + '/api/texto', async (data) => {
 });
 
 // Get images
+let getImages = async () => {
+    // fetch(url + '/api/imagenes/ready', {
+    //     method: 'GET',
+    //     headers: {
+    //         'Accept': 'application/json',
+    //         'Content-Type': 'application/json'
+    //     }
+    // }).then(res => {
+    //     console.log(res.json())
+    // }).catch(e =>{
+    //     console.log(e)
+    // });
+    // $.ajax(url + '/api/imagenes/ready',
+    //     {
+    //         method: 'GET',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json'
+    //         }
+    //     }).then(res => {
+    //         console.log(res)
+    //     }).catch(e => {
+    //         console.log(e)
+    //     });
+    // console.log(rawResponse);
+}
+getImages()
 $.get(url + '/api/imagenes/ready', async (data) => {
     console.log(data)
     for (let i = 0; i < data.imagenes.length; i++) {
         let fileId = data.imagenes[i].fileId
         let description = data.imagenes[i].description
-        let div = '<div class=\"imagen\"><img src=\"'+url+'/api/imagenes/' + fileId + '\" alt=\"' + description + '\"></div>';
+        let div = '<div class=\"imagen\"><img src=\"' + url + '/api/imagenes/' + fileId + '\" alt=\"' + description + '\"></div>';
         $('div.content div.images').append(div);
     }
 });
@@ -34,7 +73,7 @@ $.get(url + '/api/videos', async (data) => {
     for (let i = 0; i < data.videos.length; i++) {
         let fileId = data.videos[i].fileId
         let description = data.videos[i].description
-        let div = '<div class=\"video\"><video src=\"'+url+'/api/videos/' + fileId + '\" alt=\"' + description + '\" controls></div>';
+        let div = '<div class=\"video\"><video src=\"' + url + '/api/videos/' + fileId + '\" alt=\"' + description + '\" controls></div>';
         $('div.content div.videos').append(div);
     }
 });
@@ -157,4 +196,4 @@ $('div.circle div.contentButtons button#text').click(showText);
 $('div.circle div.contentButtons button#images').click(showImages);
 $('div.circle div.contentButtons button#videos').click(showVideos);
 
-content(null)
+follow(null)
