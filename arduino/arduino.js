@@ -10,7 +10,7 @@ module.exports = (io) => {
         m20 = new five.Pin(11);
         m21 = new five.Pin(10);
 
-        cons proximity = new Proximity({
+        const proximity = new Proximity({
 
         	controller: "HCSR04",
         	pin: 7
