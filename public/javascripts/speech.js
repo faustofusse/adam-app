@@ -13,10 +13,11 @@ recognition.onresult = (e) => {
     $('div.speech p').html(transcript);
     askQuestion(texto, transcript).then(rta => {
         console.log('Respuesta: ' + rta);
-
         initializeWaves();
         $('div.speech p').html(rta[0].toUpperCase() + rta.slice(1) + '.');
         if (responsiveVoice.voiceSupport()) {
+            relatedMedia = getRelatedMedia(transcript + rta);
+            updateRelatedMedia();
             responsiveVoice.speak(rta, 'Spanish Latin American Male', { onstart: onStartVoice, onend: onEndVoice });
         } else {
             alert(rta);
@@ -31,5 +32,12 @@ onStartVoice = () => {
 }
 
 onEndVoice = () => {
+    $('div.speech p').html('');
+    $('div.speech div.center').animate({ borderRadius: '2em' }, 400);
     $('div.speech div.center div#waves').slideUp();
+    if (relatedMedia.length > 0)
+        $('div.speech div.center div#multimedia').slideDown();
+    else
+        stopListening();
 }
+

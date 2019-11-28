@@ -4,6 +4,9 @@ const local_api = 'http://localhost:5000'
 var contenido = [];
 var texto = '';
 var fontListening = '12em';
+var imagenes = [];
+var videos = [];
+var relatedMedia = [];
 
 $(document).ready(function () {
     animationListening();
@@ -54,6 +57,7 @@ let updateImages = async () => {
     $.get(url + '/api/imagenes/ready', async (data) => {
         console.log(data);
         $('div.content div.images div.imagen').remove();
+        imagenes = data.imagenes;
         for (let i = 0; i < data.imagenes.length; i++) {
             let fileId = data.imagenes[i].fileId
             let description = data.imagenes[i].description
@@ -68,6 +72,7 @@ let updateVideos = () => {
     $.get(url + '/api/videos', async (data) => {
         console.log(data);
         $('div.content div.videos div.video').remove();
+        videos = data.videos;
         for (let i = 0; i < data.videos.length; i++) {
             let fileId = data.videos[i].fileId
             let description = data.videos[i].description
@@ -77,25 +82,41 @@ let updateVideos = () => {
     });
 }
 
+let updateRelatedMedia = () => {
+    let media = relatedMedia;
+    let div = null;
+    $('div.speech div.center div#multimedia > div > div').remove();
+    for (let i = 0; i < media.length; i++) {
+        let fileId = media[i].fileId
+        let description = media[i].description
+        if (media[i].type.includes('image'))
+            div = '<div class=\"imagen\"><img src=\"' + url + '/api/imagenes/' + fileId + '\" alt=\"' + description + '\"></div>';
+        else
+            div = '<div class=\"video\"><video src=\"' + url + '/api/videos/' + fileId + '\" alt=\"' + description + '\" controls></div>';
+        $('div.speech div.center div#multimedia > div').append(div);
+    }
+}
+
 let listen = e => {
     // Start speech recognition
     recognition.start();
+    $('div.speech div.center').css('border-radius', '50%');
     $('div.speech').css('display', 'flex');
-    $('div.speech').css('background-color', 'rgba(0, 0, 0, 0.70)');
     $('div.speech div.center i').css('display', 'flex');
-        // $('div.speech').toggleClass('active');
-    // $('div.speech').animate({ backgroundColor: '#000000' }, 1000);
+    $('div.speech').animate({ backgroundColor: 'rgba(0, 0, 0, 0.60)' }, 300);
 }
 
 let stopListening = e => {
     recognition.stop();
     responsiveVoice.cancel();
-    $('div.speech').css('background-color', 'rgba(0, 0, 0, 0)');
-    $('div.speech').css('display', 'none');
     $('div.speech div.center div#waves').css('display', 'none');
     $('div.speech div.center div#waves > div').remove();
+    $('div.speech div.center div#multimedia').css('display', 'none');
     $('div.speech div.center').css('border-radius', '50%');
     $('div.speech p').html('');
+    $('div.speech').animate({ backgroundColor: 'rgba(0, 0, 0, 0)' }, 300, () => {
+        $('div.speech').css('display', 'none');
+    });
 }
 
 let follow = e => {
@@ -179,6 +200,23 @@ let animationListening = () => {
             animationListening();
         }, 200);
     });
+}
+
+let getRelatedMedia = (text) => {
+    text = text.toLowerCase();
+    let result = [];
+    let media = imagenes.concat(videos);
+    let words = 0;
+    console.log(media);
+    for (var i = 0; i < media.length; i++) {
+        words = 0;
+        for (var j = 0; j < media[i].keywords.length; j++)
+            if (text.includes(media[i].keywords[j].toLowerCase()))
+                words += 1;
+        if (words > 0)
+            result.push(media[i]);
+    }
+    return result;
 }
 
 // Events

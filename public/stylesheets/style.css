@@ -77,6 +77,8 @@ div.time {
 }
 
 div.time span {
+  font-size: 1.2em;
+  align-self: center;
   color: #333;
 }
 
@@ -246,12 +248,12 @@ div.content div.media div.images, div.videos {
   flex-wrap: wrap;
 }
 
-div.content div.media div div {
+div.content div.media div div, div.speech div.center div#multimedia div div {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 25%;
+  width: 27%;
   padding: .5em;
   /* background: linear-gradient(180deg, rgba(3, 227, 200, 0.4) 0%, rgba(255, 255, 255, 0) 100%), #2444B4; */
   background-color: #eee;
@@ -259,16 +261,17 @@ div.content div.media div div {
   margin: 1em;
   margin-top: 2em;
   border-radius: 1em;
-  min-height: 10em;
+  /* min-height: 10em; */
+  /* max-height: 5em; */
 }
 
-div.content div.media div div img {
+div.content div.media div div img, div.speech div.center div#multimedia div div img {
   width: 100%;
   height: 100%;
   border-radius: 1em;
 }
 
-div.content div.media div div video {
+div.content div.media div div video, div.speech div.center div#multimedia div div video {
   width: 100%;
 }
 
@@ -302,10 +305,6 @@ div.speech {
 	-moz-transition: background-color 1s ease;
 	-o-transition: background-color 1s ease;
   transition: background-color 1s ease; */
-}
-
-.active {
-  background-color: rgba(0, 0, 0, 0.70);
 }
 
 div.speech>div.center {
@@ -390,3 +389,24 @@ div.speech div.center div#waves button {
 div.speech div.center div#waves button:hover {
   box-shadow: 0 0 30px 5px rgba(255, 255, 255, .75);
 }
+
+div.speech div.center div#multimedia {
+  width: 45em;
+  max-height: 60%;
+  display: none;
+  flex-direction: column;
+  justify-content: stretch;
+}
+
+div.speech div.center div#multimedia h2 {
+  padding-bottom: 1em;
+  font-size: 2em;
+}
+
+div.speech div.center div#multimedia div {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+div.speech div.center div#multimedia div {}
