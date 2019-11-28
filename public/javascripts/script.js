@@ -3,6 +3,15 @@ const url = 'https://aadam.herokuapp.com';
 const local_api = 'http://localhost:5000'
 var contenido = [];
 var texto = '';
+var fontListening = '12em';
+
+$(document).ready(function () {
+    animationListening();
+});
+
+// Speech recognition
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
 
 // Sockets 
 const socket = io('http://localhost:5000/');
@@ -16,101 +25,77 @@ socket.on('values', (values) => {
     // console.log(JSON.parse(values));
 });
 
-// Get content
-$.get(url + '/api/texto', async (data) => {
-    for (var i = 0; i < data.length; i++) {
-        var id = data[i].fileId;
-        await $.get(url + '/api/documentos/' + id, function (text) {
-            contenido.push(text);
-            texto += '\n\n' + text;
-        });
-    }
-    $('div.content div.text p').html(texto);
-    console.log('Contenido listo!');
-});
-
-// Get images
-let getImages = async () => {
-    // fetch(url + '/api/imagenes/ready', {
-    //     method: 'GET',
-    //     headers: {
-    //         'Accept': 'application/json',
-    //         'Content-Type': 'application/json'
-    //     }
-    // }).then(res => {
-    //     console.log(res.json())
-    // }).catch(e =>{
-    //     console.log(e)
-    // });
-    // $.ajax(url + '/api/imagenes/ready',
-    //     {
-    //         method: 'GET',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/json'
-    //         }
-    //     }).then(res => {
-    //         console.log(res)
-    //     }).catch(e => {
-    //         console.log(e)
-    //     });
-    // console.log(rawResponse);
-}
-getImages()
-$.get(url + '/api/imagenes/ready', async (data) => {
-    console.log(data)
-    for (let i = 0; i < data.imagenes.length; i++) {
-        let fileId = data.imagenes[i].fileId
-        let description = data.imagenes[i].description
-        let div = '<div class=\"imagen\"><img src=\"' + url + '/api/imagenes/' + fileId + '\" alt=\"' + description + '\"></div>';
-        $('div.content div.images').append(div);
-    }
-});
-
-// Get videos
-$.get(url + '/api/videos', async (data) => {
-    console.log(data)
-    for (let i = 0; i < data.videos.length; i++) {
-        let fileId = data.videos[i].fileId
-        let description = data.videos[i].description
-        let div = '<div class=\"video\"><video src=\"' + url + '/api/videos/' + fileId + '\" alt=\"' + description + '\" controls></div>';
-        $('div.content div.videos').append(div);
-    }
-});
-
-// Speech recognition
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const recognition = new SpeechRecognition();
-recognition.onstart = () => {
-    console.log("Listening...");
-}
-recognition.onresult = (e) => {
-    // $('p').html(e.results[0][0].transcript);
-    var transcript = e.results[0][0].transcript;
-    console.log('Pregunta: ' + transcript);
-    askQuestion(texto, transcript).then(rta => {
-        console.log('Respuesta: ' + rta);
-        // alert(rta);
-        if (responsiveVoice.voiceSupport()) {
-            responsiveVoice.speak(rta, 'Spanish Latin American Male');
-        } else {
-            alert(rta);
-        }
-    });
-}
-
 // Clock
 var interval = setInterval(function () {
     var momentNow = moment();
     $('div.time span').html(momentNow.format('hh:mm'));
 }, 100);
 
-
 // Functions
+
+let updateText = () => {
+    // Get content
+    $.get(url + '/api/texto', async (data) => {
+        for (var i = 0; i < data.length; i++) {
+            var id = data[i].fileId;
+            await $.get(url + '/api/documentos/' + id, function (text) {
+                contenido.push(text);
+                texto += '\n\n' + text;
+            });
+        }
+        $('div.content div.text p').html(texto);
+        console.log('Contenido listo!');
+    });
+}
+
+let updateImages = async () => {
+    // Get images
+
+    $.get(url + '/api/imagenes/ready', async (data) => {
+        console.log(data);
+        $('div.content div.images div.imagen').remove();
+        for (let i = 0; i < data.imagenes.length; i++) {
+            let fileId = data.imagenes[i].fileId
+            let description = data.imagenes[i].description
+            let div = '<div class=\"imagen\"><img src=\"' + url + '/api/imagenes/' + fileId + '\" alt=\"' + description + '\"></div>';
+            $('div.content div.images').append(div);
+        }
+    });
+}
+
+let updateVideos = () => {
+    // Get videos
+    $.get(url + '/api/videos', async (data) => {
+        console.log(data);
+        $('div.content div.videos div.video').remove();
+        for (let i = 0; i < data.videos.length; i++) {
+            let fileId = data.videos[i].fileId
+            let description = data.videos[i].description
+            let div = '<div class=\"video\"><video src=\"' + url + '/api/videos/' + fileId + '\" alt=\"' + description + '\" controls></div>';
+            $('div.content div.videos').append(div);
+        }
+    });
+}
 
 let listen = e => {
     // Start speech recognition
     recognition.start();
+    $('div.speech').css('display', 'flex');
+    $('div.speech').css('background-color', 'rgba(0, 0, 0, 0.70)');
+    $('div.speech div.center i').css('display', 'flex');
+        // $('div.speech').toggleClass('active');
+    // $('div.speech').animate({ backgroundColor: '#000000' }, 1000);
+}
+
+let stopListening = e => {
+    recognition.stop();
+    responsiveVoice.cancel();
+    $('div.speech').css('background-color', 'rgba(0, 0, 0, 0)');
+    $('div.speech').css('display', 'none');
+    $('div.speech div.center div#waves').css('display', 'none');
+    $('div.speech div.center div#waves > div').remove();
+    $('div.speech div.center').css('border-radius', '50%');
+    $('div.speech p').html('');
 }
 
 let follow = e => {
@@ -187,6 +172,15 @@ let askQuestion = async (context, question) => {
     return content.answer;
 };
 
+let animationListening = () => {
+    $('div.speech div.center i').animate({ fontSize: fontListening }, 200, () => {
+        fontListening = fontListening === '10em' ? '12em' : '10em';
+        setTimeout(() => {
+            animationListening();
+        }, 200);
+    });
+}
+
 // Events
 $('div.buttons > button#talk').click(listen);
 $('div.buttons > button#follow').click(follow);
@@ -195,5 +189,9 @@ $('nav > div > button#back').click(back);
 $('div.circle div.contentButtons button#text').click(showText);
 $('div.circle div.contentButtons button#images').click(showImages);
 $('div.circle div.contentButtons button#videos').click(showVideos);
+$('div.speech > button#close').click(stopListening);
 
-follow(null)
+// Initialize content
+updateText();
+updateImages();
+updateVideos();
