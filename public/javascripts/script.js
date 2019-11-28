@@ -174,7 +174,7 @@ let askQuestion = async (context, question) => {
         "context": [context],
         "question": [question]
     }
-    const rawResponse = await fetch(local_api + '/squad/answer', {
+    const rawResponse = await fetch(local_api + '/answer', {
         method: 'POST',
         headers: {
             'Accept': 'application/json',

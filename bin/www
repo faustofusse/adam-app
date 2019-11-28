@@ -24,7 +24,7 @@ var io = require('socket.io')(server);
 io.on('connection', () => {
   console.log('Usuario conectado');
 });
-var arduino = require('../arduino/arduino')(io)
+// var arduino = require('../arduino/arduino')(io);
 
 /**
  * Listen on provided port, on all network interfaces.
