@@ -17,16 +17,16 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
 const recognition = new SpeechRecognition();
 
 // Sockets 
-const socket = io('http://localhost:5000/');
-socket.on('connect', function () {
-    // socket.emit('holaa', { data: 'I\'m connected!' });
-    console.log('Socket connected')
+// const socket = io('http://localhost:5000/');
+// socket.on('connect', function () {
+//     // socket.emit('holaa', { data: 'I\'m connected!' });
+//     console.log('Socket connected')
 
-});
-socket.on('values', (values) => {
-    console.log(values)
-    // console.log(JSON.parse(values));
-});
+// });
+// socket.on('values', (values) => {
+//     console.log(values)
+//     // console.log(JSON.parse(values));
+// });
 
 // Clock
 var interval = setInterval(function () {

@@ -6,7 +6,7 @@
 
 var app = require('../app');
 var debug = require('debug')('adam-app:server');
-var http = require('http');
+// var http = require('http');
 
 /**
  * Get port from environment and store in Express.
@@ -19,11 +19,18 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+var server = require('http').Server(app);
+
 var io = require('socket.io')(server);
-io.on('connection', () => {
-  console.log('Usuario conectado');
+
+io.on('connection', socket => {
+  console.log('Usuario conectado.');
+
+  socket.on('follow', data => {
+    console.log(data);
+  });
 });
+
 // var arduino = require('../arduino/arduino')(io);
 
 /**
