@@ -186,20 +186,86 @@ div.follow div.rectangle.left {
   transform: scaleX(-1);
 }
 
-div.follow button#startFollow {
+div.follow div.start {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   left: 0;
   right: 0;
+  bottom: 5em;
   margin-left: auto;
   margin-right: auto;
-  width: 15em;
+  width: 20em;
+}
+
+div.follow button#startFollow, div.follow button#endFollow {
+  width: 100%;
   font-size: 1.4em;
-  bottom: 5em;
   background: #03E3C8;
   border: 9px solid rgba(0, 0, 0, 0.25);
   box-sizing: border-box;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 50px;
+}
+
+div.follow div.names {
+  display: none;
+  flex-direction: column;
+  width: 70%;
+  max-height: 20em;
+  box-sizing: border-box;
+  box-shadow: 4px 11px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 15px;
+  background-color: #fff;
+}
+
+div.follow div.names>div {
+  width: 100%;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px #333 solid;
+}
+
+div.follow div.names>div:first-of-type {
+  border-top-right-radius: 15px;
+  border-top-left-radius: 15px;
+}
+
+div.follow div.names div button {
+  align-self: center;
+  width: 90%;
+  height: 100%;
+  padding: .5em;
+  font-size: 1.3em;
+  text-align: left;
+  background-color: #fff;
+  border: none;
+}
+
+div.follow div.names div button:last-of-type {
+  width: auto;
+}
+
+div.follow div.names>div:first-of-type button {
+  border-top-right-radius: 15px;
+  border-top-left-radius: 15px;
+  padding-top: .7em;
+}
+
+div.follow div.names>div:first-of-type {
+  border: none;
+}
+
+div.follow button#train {
+  position: absolute;
+  right: 1em;
+  bottom: 1em;
+  border: none;
+  background-color: #C4C4C400;
 }
 
 div.content {
