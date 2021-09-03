@@ -1,5 +1,5 @@
 // mdc.ripple.MDCRipple.attachTo(document.querySelector('button'));
-const url = 'https://aadam.herokuapp.com';
+const url = 'http://localhost:8080'; //https://aadam.herokuapp.com
 const local_api = 'http://localhost:5000'
 var contenido = [];
 var texto = '';
